@@ -15,7 +15,7 @@ import {
   isNodeAnimationCompatible,
 } from "../state/filters.ts";
 import { BODY_TYPES } from "../state/constants.ts";
-import { tBody } from "../utils/i18n.ts";
+import { tBody, tCat } from "../utils/i18n.ts";
 import { capitalize, matchesSearch, nodeHasMatches } from "../utils/helpers.ts";
 import {
   itemWithVariantsModelFactory,
@@ -270,7 +270,7 @@ function createTreeNodeModel(
   }
 
   return {
-    name: node.label ?? capitalize(name),
+    name: node.label ?? tCat(name, capitalize(name)),
     title,
     isCompatible,
     isExpanded,

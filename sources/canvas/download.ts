@@ -1,6 +1,7 @@
 import type { ResultAsync } from "neverthrow";
 import { canvasToBlob } from "./canvas-utils.ts";
 import { getCanvas, type CanvasNotInitialized } from "./renderer.ts";
+import { saveBlob } from "../utils/download-bridge.ts";
 
 type GetCanvasBlobFn = () => ResultAsync<Blob, CanvasNotInitialized>;
 
@@ -17,12 +18,8 @@ export async function downloadAsPNG(
     console.error("Error downloading PNG:", blobResult.error);
     return;
   }
-  const url = URL.createObjectURL(blobResult.value);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  // Android WebView 不支持 <a download>，改由下载桥接交给原生保存
+  await saveBlob(blobResult.value, filename);
 }
 
 export function downloadFile(
@@ -30,11 +27,5 @@ export function downloadFile(
   filename: string,
   type: string = "text/plain",
 ): void {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  void saveBlob(new Blob([content], { type }), filename);
 }

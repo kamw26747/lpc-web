@@ -1,4 +1,5 @@
 import { ok, err, type Result } from "neverthrow";
+import { saveBlob } from "./download-bridge.ts";
 import {
   ANIMATION_CONFIGS,
   FRAME_SIZE,
@@ -620,10 +621,6 @@ export async function zipGenerateBlobWithProfiler(
 }
 
 export function downloadZipBlob(zipBlob: Blob, filename: string): void {
-  const url = URL.createObjectURL(zipBlob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+  // Android WebView 不支持 <a download>，改由下载桥接交给原生保存
+  void saveBlob(zipBlob, filename);
 }

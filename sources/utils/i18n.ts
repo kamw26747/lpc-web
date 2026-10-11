@@ -81,6 +81,18 @@ export function tBody(value: string, fallback: string): string {
   return hit ?? fallback;
 }
 
+/**
+ * 分类名（导航树）：按英文段名查表，缺失时回退原值。
+ * 分类名来自 `sheet_definitions/` 的目录段（共 109 个），
+ * 中文词条以 `category.<段名>` 形式仅存在于 zh-CN（英文侧刻意不建条目，
+ * 以完整保留上游原始英文命名）。
+ */
+export function tCat(segment: string, fallback: string): string {
+  const key = `category.${segment}`;
+  const hit = catalogs[current]?.[key] ?? catalogs[FALLBACK]?.[key];
+  return hit ?? fallback;
+}
+
 /** 开发期校验：找出两套词条之间的键差异。 */
 export function diffCatalogs(a: Catalog, b: Catalog): { missingInB: string[]; missingInA: string[] } {
   const ka = new Set(Object.keys(a));
