@@ -1,5 +1,6 @@
 // Animation Preview component
 import m from "mithril";
+import { t, tAnim } from "../../utils/i18n.ts";
 import type { State } from "../../state/state.ts";
 import { ANIMATIONS, FRAME_SIZE } from "../../state/constants.ts";
 import { CollapsibleSection } from "../CollapsibleSection.ts";
@@ -172,7 +173,7 @@ export const AnimationPreview: m.Component<
     return m(
       CollapsibleSection,
       {
-        title: "Animation Preview",
+        title: t("preview.animation.title"),
         defaultOpen: true,
         boxClass: "box",
       },
@@ -181,7 +182,7 @@ export const AnimationPreview: m.Component<
           m("div.column", [
             m("div.field.is-horizontal.is-align-items-center", [
               m("div.field-label.is-normal", [
-                m("label.label.mb-0", "Animation"),
+                m("label.label.mb-0", t("preview.animation.label")),
               ]),
               m("div.field-body", [
                 m("div.field.has-addons.mb-0", [
@@ -205,7 +206,7 @@ export const AnimationPreview: m.Component<
                           },
                         },
                         allAnimations.map((anim) =>
-                          m("option", { value: anim.value }, anim.label),
+                          m("option", { value: anim.value }, tAnim(anim.value, anim.label)),
                         ),
                       ),
                     ]),
@@ -263,7 +264,7 @@ export const AnimationPreview: m.Component<
                 state.isRenderingCharacter
                   ? m("div.preview-canvas-busy", { "aria-hidden": true }, [
                       m("span.loading", {
-                        "aria-label": "Rendering character",
+                        "aria-label": t("common.rendering"),
                       }),
                     ])
                   : null,

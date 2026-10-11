@@ -1,5 +1,6 @@
 // Item with recolors component
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import classNames from "classnames";
 import type {
   ItemWithRecolorsModel,
@@ -203,7 +204,7 @@ export const ItemWithRecolors: m.Component<
                     : null,
                 ],
               ),
-              m("p.is-size-7.has-text-grey.mt-2", "Loading palette data…"),
+              m("p.is-size-7.has-text-grey.mt-2", t("tree.loadingPalette")),
             ])
           : isExpanded
             ? m("div", [

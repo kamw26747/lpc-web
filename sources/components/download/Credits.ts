@@ -1,4 +1,5 @@
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { CreditsModel } from "../../models/credits.ts";
 import { CollapsibleSection } from "../CollapsibleSection.ts";
 
@@ -10,11 +11,11 @@ const CreditsContent: m.Component<{
     if (model.kind === "loading") {
       return m(
         "div.loading-shell-credits",
-        m("p.has-text-grey", "Loading selections…"),
+        m("p.has-text-grey", t("credits.loading")),
       );
     }
     if (model.kind === "empty") {
-      return m("p.has-text-grey", "No items selected");
+      return m("p.has-text-grey", t("credits.none"));
     }
 
     return [
@@ -25,11 +26,11 @@ const CreditsContent: m.Component<{
             m("strong.is-size-6", credit.fileName),
             credit.notes ? m("p.is-size-7", credit.notes) : null,
             m("p.is-size-7", [
-              m("strong", "Licenses: "),
+              m("strong", t("credits.licenses")),
               credit.licenses.join(", "),
             ]),
             m("p.is-size-7", [
-              m("strong", "Authors: "),
+              m("strong", t("credits.authors")),
               credit.authors.join(", "),
             ]),
           ]),
@@ -58,7 +59,7 @@ export const Credits: m.Component<{
     return m(
       CollapsibleSection,
       {
-        title: "Credits & Attribution",
+        title: t("credits.title"),
         defaultOpen: true,
         boxClass: "box",
         id: "credits-section",

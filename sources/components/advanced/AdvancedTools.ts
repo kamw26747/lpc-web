@@ -1,5 +1,6 @@
 // Advanced Tools component - Custom file upload with z-position
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { State } from "../../state/state.ts";
 import { CollapsibleSection } from "../CollapsibleSection.ts";
 
@@ -39,12 +40,12 @@ export const AdvancedTools: m.Component<{ state: State }> = {
     return m(
       CollapsibleSection,
       {
-        title: "Advanced Tools",
+        title: t("advanced.title"),
         defaultOpen: false,
       },
       [
         m("div.field", [
-          m("label.label", "Custom File Upload"),
+          m("label.label", t("advanced.customUpload")),
           m("div.control", [
             m("input.input[type=file]#customFileInput", {
               accept: "image/*",
@@ -57,7 +58,7 @@ export const AdvancedTools: m.Component<{ state: State }> = {
           ),
         ]),
         m("div.field", [
-          m("label.label", "Z-Position"),
+          m("label.label", t("advanced.zPosition")),
           m("div.control", [
             m("input.input[type=number]", {
               value: state.customImageZPos,

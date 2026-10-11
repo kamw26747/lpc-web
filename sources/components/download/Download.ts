@@ -1,4 +1,5 @@
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type {
   ClipboardCommandResult,
   DownloadModel,
@@ -120,7 +121,7 @@ export const Download: m.Component<{
   view(vnode) {
     return m(
       CollapsibleSection,
-      { title: "Download", defaultOpen: true },
+      { title: t("download.title"), defaultOpen: true },
       m(DownloadContent, { createModel: vnode.attrs.createModel }),
     );
   },

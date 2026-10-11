@@ -1,4 +1,5 @@
 import { LICENSE_CONFIG } from "../state/constants.ts";
+import { t } from "../utils/i18n.ts";
 import type { CatalogReader } from "../state/catalog.ts";
 import { isItemLicenseCompatible } from "../state/filters.ts";
 import type { State } from "../state/state.ts";
@@ -46,7 +47,10 @@ export const licenseFiltersModelFactory = {
     return {
       liteReady: catalog.isLiteReady(),
       creditsReady,
-      summary: `(${enabledCount}/${LICENSE_CONFIG.length} enabled)`,
+      summary: t("filters.license.summary", {
+        enabled: enabledCount,
+        total: LICENSE_CONFIG.length,
+      }),
       options: LICENSE_CONFIG.map((license) => ({
         key: license.key,
         label: license.label,

@@ -1,4 +1,5 @@
 import type { CatalogReader } from "../state/catalog.ts";
+import { t } from "../utils/i18n.ts";
 import type { State } from "../state/state.ts";
 
 export type SearchControlModel = {
@@ -14,7 +15,7 @@ export const searchControlModelFactory = {
     return {
       value: state.searchQuery,
       disabled,
-      title: disabled ? "Loading item list…" : undefined,
+      title: disabled ? t("common.loadingItems") : undefined,
       setValue(value) {
         state.searchQuery = value;
       },

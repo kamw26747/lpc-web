@@ -1,4 +1,5 @@
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { CategoryTreeModel } from "../../models/category-tree.ts";
 import { BodyTypeSelector } from "./BodyTypeSelector.ts";
 import { TreeNode } from "./TreeNode.ts";
@@ -9,10 +10,10 @@ function renderLoadingHost() {
       m(
         "div.category-tree-loading-overlay",
         { "aria-busy": "true", "aria-live": "polite" },
-        m("span.loading", { "aria-label": "Loading category index" }),
+        m("span.loading", { "aria-label": t("tree.loadingIndex") }),
       ),
-      m("h3.title.is-5.mb-3", "Available Items"),
-      m("p.has-text-grey.is-size-7", "Loading category index…"),
+      m("h3.title.is-5.mb-3", t("tree.available")),
+      m("p.has-text-grey.is-size-7", t("tree.loadingIndexEllipsis")),
     ]),
   ]);
 }
@@ -28,7 +29,7 @@ export const CategoryTree: m.Component<{
       m(
         "div.is-flex.is-justify-content-space-between.is-align-items-center.mb-3",
         [
-          m("h3.title.is-5.mb-0", "Available Items"),
+          m("h3.title.is-5.mb-0", t("tree.available")),
           m("div.buttons.mb-0", [
             m(
               "button.button.is-danger.is-small",
@@ -44,7 +45,7 @@ export const CategoryTree: m.Component<{
               "button.button.is-small",
               {
                 disabled: !model.liteReady,
-                title: model.liteReady ? undefined : "Loading item list…",
+                title: model.liteReady ? undefined : t("common.loadingItems"),
                 onclick: model.expandSelected,
               },
               "Expand Selected",

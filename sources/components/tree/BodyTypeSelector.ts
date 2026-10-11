@@ -1,5 +1,6 @@
 // Body type selector component (styled as tree category)
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { BodyTypeSelectorModel } from "../../models/category-tree.ts";
 
 type BodyTypeSelectorState = { isExpanded: boolean };
@@ -25,7 +26,7 @@ export const BodyTypeSelector: m.Component<
           m("span.tree-arrow", {
             class: vnode.state.isExpanded ? "expanded" : "collapsed",
           }),
-          m("span.has-text-weight-semibold", "Body Type"),
+          m("span.has-text-weight-semibold", t("bodyType.title")),
         ],
       ),
       vnode.state.isExpanded

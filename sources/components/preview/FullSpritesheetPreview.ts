@@ -1,5 +1,6 @@
 // Full Spritesheet Preview component
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { State } from "../../state/state.ts";
 import { CollapsibleSection } from "../CollapsibleSection.ts";
 import PinchToZoom from "./PinchToZoom.ts";
@@ -159,7 +160,7 @@ export const FullSpritesheetPreview: m.Component<
     return m(
       CollapsibleSection,
       {
-        title: "Full Spritesheet Preview",
+        title: t("preview.spritesheet.title"),
         defaultOpen: true,
         boxClass: "box mt-4",
       },
@@ -238,7 +239,7 @@ export const FullSpritesheetPreview: m.Component<
               state.isRenderingCharacter
                 ? m("div.preview-canvas-busy", { "aria-hidden": true }, [
                     m("span.loading", {
-                      "aria-label": "Rendering character",
+                      "aria-label": t("common.rendering"),
                     }),
                   ])
                 : null,

@@ -1,5 +1,6 @@
 // Animation Filters component
 import m from "mithril";
+import { t, tAnim } from "../../utils/i18n.ts";
 import type { AnimationFiltersModel } from "../../models/animation-filters.ts";
 
 type AnimationFiltersState = { isExpanded: boolean };
@@ -17,9 +18,9 @@ export const AnimationFilters: m.Component<
     const removeIncompatibleItems = () => {
       const removedCount = model.removeIncompatible();
       if (removedCount > 0) {
-        alert(`Removed ${removedCount} incompatible item(s)`);
+        alert(t("filters.removedCount", { n: removedCount }));
       } else {
-        alert("No incompatible items found");
+        alert(t("filters.noneFound"));
       }
     };
 
@@ -37,14 +38,14 @@ export const AnimationFilters: m.Component<
           m("span.tree-arrow", {
             class: vnode.state.isExpanded ? "expanded" : "collapsed",
           }),
-          m("span.title.is-inline.is-6", "Animation Filters"),
+          m("span.title.is-inline.is-6", t("filters.animation.title")),
           m("span.is-size-7.has-text-grey.ml-2", model.summary),
         ],
       ),
       vnode.state.isExpanded
         ? m("div.content.mt-3", [
             !model.liteReady
-              ? m("p.is-size-7.has-text-grey.mb-3", "Loading item list…")
+              ? m("p.is-size-7.has-text-grey.mb-3", t("common.loadingItems"))
               : null,
             m(
               "ul.tree-list",
@@ -59,7 +60,7 @@ export const AnimationFilters: m.Component<
                         anim.setEnabled(target.checked);
                       },
                     }),
-                    ` ${anim.label}`,
+                    ` ${tAnim(anim.value, anim.label)}`,
                   ]),
                 ]),
               ),
@@ -73,7 +74,7 @@ export const AnimationFilters: m.Component<
                         `${model.incompatibleCount} selected item${model.incompatibleCount > 1 ? "s are" : " is"} incompatible`,
                       ),
                       " with your current animation selection. ",
-                      m("span.has-text-grey", "(marked with ⚠️ above)"),
+                      m("span.has-text-grey", t("filters.markIncompatible")),
                     ]),
                   ]),
                   m(

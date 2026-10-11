@@ -1,5 +1,6 @@
 // Filters Panel - combines Controls, LicenseFilters, AnimationFilters, CurrentSelections, and CategoryTree
 import m from "mithril";
+import { t } from "../utils/i18n.ts";
 import { SearchControl } from "./filters/SearchControl.ts";
 import { LicenseFilters } from "./filters/LicenseFilters.ts";
 import { AnimationFilters } from "./filters/AnimationFilters.ts";
@@ -32,7 +33,7 @@ export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
     return m(
       CollapsibleSection,
       {
-        title: "Filters",
+        title: t("panel.filters"),
         defaultOpen: true,
       },
       [

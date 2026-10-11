@@ -15,6 +15,7 @@ import {
   isNodeAnimationCompatible,
 } from "../state/filters.ts";
 import { BODY_TYPES } from "../state/constants.ts";
+import { tBody } from "../utils/i18n.ts";
 import { capitalize, matchesSearch, nodeHasMatches } from "../utils/helpers.ts";
 import {
   itemWithVariantsModelFactory,
@@ -299,7 +300,7 @@ export const categoryTreeModelFactory = {
         selected: state.bodyType,
         options: BODY_TYPES.map((value) => ({
           value,
-          label: capitalize(value),
+          label: tBody(value, capitalize(value)),
         })),
         select: (value) => {
           state.bodyType = value;

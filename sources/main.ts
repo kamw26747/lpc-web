@@ -79,6 +79,10 @@ import { App } from "./components/App.ts";
 import { AnimationPreview } from "./components/preview/AnimationPreview.ts";
 import { FullSpritesheetPreview } from "./components/preview/FullSpritesheetPreview.ts";
 
+// Import UI i18n（上游无 i18n 框架，由本项目引入）
+import { initI18n } from "./utils/i18n.ts";
+import { en, zhCN } from "./i18n/catalog.ts";
+
 // Import performance profiler
 import { PerformanceProfiler } from "./performance-profiler.ts";
 
@@ -91,6 +95,9 @@ const applicationModels = createApplicationModels(
 );
 configureStateCatalog(applicationCatalog);
 installCatalogReadinessHooksForVisualTooling(applicationCatalog);
+
+// 初始化 UI 多语言：默认简体中文（可在设置里切换 / 记忆于 localStorage）
+initI18n({ en, "zh-CN": zhCN }, "zh-CN");
 
 // DEBUG mode will be turned on if on localhost and off in production
 // but this can be overridden by adding debug=(true|false) to the querystring.

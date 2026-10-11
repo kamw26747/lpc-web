@@ -1,5 +1,6 @@
 // Search control component
 import m from "mithril";
+import { t } from "../../utils/i18n.ts";
 import type { SearchControlModel } from "../../models/search-control.ts";
 
 export const SearchControl: m.Component<{
@@ -8,7 +9,7 @@ export const SearchControl: m.Component<{
   view(vnode) {
     const model = vnode.attrs.createModel();
     return m("div.field", [
-      m("label.label", "Search:"),
+      m("label.label", t("common.search")),
       m("input.input[type=search][placeholder=Search]", {
         value: model.value,
         disabled: model.disabled,
