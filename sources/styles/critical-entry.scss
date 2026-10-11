@@ -11,3 +11,5 @@
 // 放进 deferred-entry.scss 会导致移动端样式在生产环境整体失效。
 @import "../../styles/mobile-theme.css";
 @import "../../styles/mobile-shell.css";
+// 风格预设（桌面与移动端共用）
+@import "../../styles/style-presets.css";

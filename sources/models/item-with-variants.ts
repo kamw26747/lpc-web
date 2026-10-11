@@ -4,6 +4,7 @@ import { getLayersToLoad, type LayerToLoad } from "../state/meta.ts";
 import { getSelectionGroup, selectItem, type State } from "../state/state.ts";
 import { releaseAssetUrl, resolveAssetUrl } from "../utils/asset-vfs.ts";
 import { capitalize } from "../utils/helpers.ts";
+import { tItem, tVariant } from "../utils/i18n.ts";
 
 export type VariantItemModel = {
   readonly key: string;
@@ -71,7 +72,7 @@ export const itemWithVariantsModelFactory = {
       : [];
 
     return {
-      name: meta.name,
+      name: tItem(meta.name),
       isSearchMatch,
       isCompatible,
       tooltip: showTooltip ? tooltip : undefined,
@@ -94,7 +95,7 @@ export const itemWithVariantsModelFactory = {
               state.selections[group]?.variant === variant;
             return {
               key: variant,
-              label: capitalize(variant.replaceAll("_", " ")),
+              label: tVariant(variant, capitalize(variant.replaceAll("_", " "))),
               isSelected,
               isCompatible,
               size,

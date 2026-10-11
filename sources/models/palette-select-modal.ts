@@ -13,6 +13,7 @@ import {
 } from "../state/palettes.ts";
 import { getSelectionGroup, type State } from "../state/state.ts";
 import { ucwords } from "../utils/helpers.ts";
+import { tItem, tVariant } from "../utils/i18n.ts";
 
 export type PaletteTileModel = {
   readonly key: string;
@@ -76,7 +77,7 @@ function createReadyModel(
           const itemColors = { ...selectedColors, [selectionGroup]: key };
           return {
             key,
-            label: ucwords(paletteName.replaceAll("_", " ")),
+            label: tVariant(paletteName, ucwords(paletteName.replaceAll("_", " "))),
             colors: colors.slice().reverse(),
             isSelected:
               (selection?.itemId === itemId ||
@@ -99,8 +100,8 @@ function createReadyModel(
     return {
       key: path,
       label:
-        (versionMeta?.label ?? "") +
-        (material !== option.material ? ` - ${materialMeta?.label}` : ""),
+        tItem(versionMeta?.label ?? "") +
+        (material !== option.material ? ` - ${tItem(materialMeta?.label ?? "")}` : ""),
       isSource: version === CUSTOM_VERSION,
       isExpanded,
       tiles,

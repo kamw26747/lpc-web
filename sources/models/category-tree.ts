@@ -15,7 +15,7 @@ import {
   isNodeAnimationCompatible,
 } from "../state/filters.ts";
 import { BODY_TYPES } from "../state/constants.ts";
-import { tBody, tCat } from "../utils/i18n.ts";
+import { tBody, tCat, tItem, tAnim, t, itemSearchText } from "../utils/i18n.ts";
 import { capitalize, matchesSearch, nodeHasMatches } from "../utils/helpers.ts";
 import {
   itemWithVariantsModelFactory,
@@ -105,7 +105,7 @@ function itemTooltip(
   isLicenseCompatible: boolean,
   isAnimationCompatible: boolean,
 ): string {
-  let licensesText = "License info loading…";
+  let licensesText = t("tooltip.licenseLoading");
   if (catalog.isCreditsReady()) {
     const licenses = new Set<string>();
     for (const credit of catalog.getItemCredits(itemId).unwrapOr([])) {
@@ -113,25 +113,28 @@ function itemTooltip(
     }
     licensesText =
       licenses.size > 0
-        ? `Licenses: ${Array.from(licenses).join(", ")}`
-        : "No license info";
+        ? t("tooltip.licenses", { list: Array.from(licenses).join(", ") })
+        : t("tooltip.noLicenseInfo");
   }
 
   const animationsText = meta.animations?.length
-    ? `Animations: ${meta.animations.join(", ")}`
-    : "No animation info";
+    ? t("tooltip.animations", { list: meta.animations.map((a) => tAnim(a, a)).join(", ") })
+    : t("tooltip.noAnimationInfo");
   const issues = [
-    !isLicenseCompatible ? "licenses" : null,
-    !isAnimationCompatible ? "animations" : null,
+    !isLicenseCompatible ? t("tooltip.issueLicenses") : null,
+    !isAnimationCompatible ? t("tooltip.issueAnimations") : null,
   ].filter(Boolean);
   const warning = issues.length
-    ? `⚠️ Incompatible with selected ${issues.join(" and ")}\n`
+    ? `${t("tooltip.incompatible", { items: issues.join(t("tooltip.and")) })}\n`
     : "";
   return `${warning}${licensesText}\n${animationsText}`;
 }
 
 function itemMatchesSearch(name: string, searchQuery: string): boolean {
-  return searchQuery.length >= 2 && matchesSearch(name, searchQuery);
+  // 中文环境下同时匹配英文原名的中文译名（「长发」与 "Long straight" 都能命中）
+  return (
+    searchQuery.length >= 2 && matchesSearch(itemSearchText(name), searchQuery)
+  );
 }
 
 function createItemModel(
@@ -196,7 +199,7 @@ function createItemModel(
   return {
     kind: "simple",
     key: itemId,
-    name: meta.name,
+    name: tItem(meta.name),
     isSearchMatch,
     isCompatible,
     isSelected,

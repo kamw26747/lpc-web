@@ -2,6 +2,7 @@ import type { CatalogReader, ItemMerged } from "../state/catalog.ts";
 import { drawRecolorPreview } from "../canvas/palette-recolor.ts";
 import { getPaletteOptions, type PaletteOption } from "../state/palettes.ts";
 import { getSelectionGroup, selectItem, type State } from "../state/state.ts";
+import { tItem } from "../utils/i18n.ts";
 import {
   paletteSelectModalModelFactory,
   type PaletteSelectModalModel,
@@ -96,7 +97,7 @@ export const itemWithRecolorsModelFactory = {
       );
     };
     const optionModels = paletteOptions.map((option, index) => ({
-      label: option.label,
+      label: tItem(option.label),
       colors: option.colors,
       prepareSelection: () => {
         applyRememberedColors(

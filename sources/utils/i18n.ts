@@ -12,6 +12,8 @@
 
 export type Locale = "zh-CN" | "en";
 
+import { ITEM_ZH, VARIANT_ZH } from "../i18n/glossary.ts";
+
 type Catalog = Record<string, string>;
 
 const catalogs: Record<string, Catalog> = {};
@@ -101,4 +103,64 @@ export function diffCatalogs(a: Catalog, b: Catalog): { missingInB: string[]; mi
     missingInB: [...ka].filter((k) => !kb.has(k)).sort(),
     missingInA: [...kb].filter((k) => !ka.has(k)).sort(),
   };
+}
+
+/**
+ * 素材名（`sheet_definitions` 的 `name`，如 "Afro" / "Long straight"）→ 中文。
+ *
+ * 词表见 `sources/i18n/glossary.ts`（649 条，覆盖上游全部素材）。
+ * 中文只在 zh-CN 生效；切回 en 时直接返回原名，与上游完全一致。
+ */
+export function tItem(name: string): string {
+  if (!name || current !== "zh-CN") return name;
+  return ITEM_ZH[name] ?? name;
+}
+
+/**
+ * 变体 / 配色名（`variants` 取值与调色板色名，如 "navy" / "light brown"）→ 中文。
+ *
+ * `fallback` 传上游原本的显示形式（`capitalize(variant.replaceAll("_", " "))`），
+ * 缺失时回退，保证不丢信息。
+ */
+export function tVariant(value: string, fallback: string): string {
+  if (!value || current !== "zh-CN") return fallback;
+  return VARIANT_ZH[value] ?? fallback;
+}
+
+/**
+ * 搜索匹配用的素材名文本：中文环境下把中英两套名字拼在一起，
+ * 这样「长发」「Long straight」都能搜到同一项。
+ */
+export function itemSearchText(name: string): string {
+  const zh = ITEM_ZH[name];
+  return zh && zh !== name ? `${name} ${zh}` : name;
+}
+
+/** 变体搜索文本：同上。 */
+export function variantSearchText(value: string): string {
+  const zh = VARIANT_ZH[value];
+  return zh && zh !== value ? `${value} ${zh}` : value;
+}
+
+/**
+ * 「已选」面板里的显示名。
+ *
+ * 上游把它拼成 `Base (variant | recolor)`（见 hash.ts 的 buildNewSelection），
+ * 这里分别翻译基名与括号内的变体/配色，并保留原有的结构。
+ */
+export function tSelectionName(name: string): string {
+  if (!name || current !== "zh-CN") return name;
+  const idx = name.indexOf(" (");
+  if (idx === -1 || !name.endsWith(")")) return tItem(name);
+  const base = tItem(name.slice(0, idx));
+  const inner = name.slice(idx + 2, -1);
+  const parts = inner.split("|").map((s) => s.trim());
+  const zhParts = parts.map((part) => {
+    const toks = part.split(" ");
+    const last = toks[toks.length - 1];
+    const hit = VARIANT_ZH[part] ?? VARIANT_ZH[last];
+    if (!hit) return part;
+    return VARIANT_ZH[part] ? hit : `${toks.slice(0, -1).join(" ")} ${hit}`;
+  });
+  return `${base}（${zhParts.join(" | ")}）`;
 }

@@ -4,6 +4,7 @@ import {
   isItemLicenseCompatible,
 } from "../state/filters.ts";
 import type { State } from "../state/state.ts";
+import { t, tAnim, tSelectionName } from "../utils/i18n.ts";
 
 export type CurrentSelectionItemModel = {
   readonly key: string;
@@ -50,27 +51,31 @@ export const currentSelectionsModelFactory = {
         }
 
         const licensesText = !creditsReady
-          ? "License info loading…"
+          ? t("tooltip.licenseLoading")
           : licenses.size > 0
-            ? `Licenses: ${Array.from(licenses).join(", ")}`
-            : "No license info";
+            ? t("tooltip.licenses", { list: Array.from(licenses).join(", ") })
+            : t("tooltip.noLicenseInfo");
         const supportedAnimations = meta?.animations ?? [];
         const animationsText =
           supportedAnimations.length > 0
-            ? `Animations: ${supportedAnimations.join(", ")}`
-            : "No animation info";
+            ? t("tooltip.animations", {
+                list: supportedAnimations.map((a) => tAnim(a, a)).join(", "),
+              })
+            : t("tooltip.noAnimationInfo");
         const incompatibility = !isCompatible
-          ? `⚠️ Incompatible with selected ${[
-              !licenseCompatible ? "licenses" : null,
-              !animationCompatible ? "animations" : null,
-            ]
-              .filter(Boolean)
-              .join(" and ")}\n`
+          ? `${t("tooltip.incompatible", {
+              items: [
+                !licenseCompatible ? t("tooltip.issueLicenses") : null,
+                !animationCompatible ? t("tooltip.issueAnimations") : null,
+              ]
+                .filter(Boolean)
+                .join(t("tooltip.and")),
+            })}\n`
           : "";
 
         return {
           key,
-          name: selection.name,
+          name: tSelectionName(selection.name),
           isCompatible,
           tooltip: `${incompatibility}${licensesText}\n${animationsText}`,
           remove: () => {

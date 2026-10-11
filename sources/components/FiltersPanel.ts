@@ -6,7 +6,10 @@ import { LicenseFilters } from "./filters/LicenseFilters.ts";
 import { AnimationFilters } from "./filters/AnimationFilters.ts";
 import { CurrentSelections } from "./selections/CurrentSelections.ts";
 import { CategoryTree } from "./tree/CategoryTree.ts";
+import { StylePresets } from "./StylePresets.ts";
 import { CollapsibleSection } from "./CollapsibleSection.ts";
+import type { CatalogReader } from "../state/catalog.ts";
+import type { State } from "../state/state.ts";
 import type { CurrentSelectionsModel } from "../models/current-selections.ts";
 import type { SearchControlModel } from "../models/search-control.ts";
 import type { LicenseFiltersModel } from "../models/license-filters.ts";
@@ -14,6 +17,8 @@ import type { AnimationFiltersModel } from "../models/animation-filters.ts";
 import type { CategoryTreeModel } from "../models/category-tree.ts";
 
 type FiltersPanelAttrs = {
+  catalog: CatalogReader;
+  state: State;
   createSearchControlModel: () => SearchControlModel;
   createLicenseFiltersModel: () => LicenseFiltersModel;
   createAnimationFiltersModel: () => AnimationFiltersModel;
@@ -26,6 +31,8 @@ type FiltersPanelAttrs = {
 export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
   view(vnode) {
     const {
+      catalog,
+      state,
       createSearchControlModel,
       createLicenseFiltersModel,
       createAnimationFiltersModel,
@@ -40,11 +47,13 @@ export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
         slice: vnode.attrs.slice,
       },
       [
-        m(
-          "div.mb-4",
-          { "data-slice": "parts" },
+        // 注意：风格预设放在**已有**的第一个 .mb-4 内，
+        // 不新增同级元素 —— 否则 `… .mb-4:nth-child(N)` 等桌面端
+        // 结构选择器的下标会整体错位。
+        m("div.mb-4", { "data-slice": "parts" }, [
+          m(StylePresets, { catalog, state }),
           m(SearchControl, { createModel: createSearchControlModel }),
-        ),
+        ]),
         // Responsive wrapper for License and Animation filters
         m("div.columns.is-multiline.m-0", { "data-slice": "parts" }, [
           m(
