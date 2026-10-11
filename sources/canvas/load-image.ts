@@ -1,4 +1,5 @@
 import { debugWarn } from "../utils/debug.ts";
+import { releaseAssetUrl, resolveAssetUrl } from "../utils/asset-vfs.ts";
 
 let loadedImages: Record<string, HTMLImageElement> = {};
 /** In-flight loads: same `src` shares one `Image` and one profiler span. */
@@ -51,13 +52,13 @@ export function resetImageLoadCache(): void {
 }
 
 /** Load an image. Rejects with `Error("Failed to load <src>")` on error. */
-export function loadImage(src: string): Promise<HTMLImageElement> {
+export async function loadImage(src: string): Promise<HTMLImageElement> {
   if (loadImageForTests) {
     return loadImageForTests(src);
   }
   if (loadedImages[src]) {
     imageLoadStats.cacheHits++;
-    return Promise.resolve(loadedImages[src]);
+    return loadedImages[src];
   }
   const existing = inFlight.get(src);
   if (existing) {
@@ -83,10 +84,21 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
     profiler.mark(`image-load:${src}:start`);
   }
 
+  // 资源可能被打包进单个归档（APK 的 zip 条目上限约束）→ 先解析为可加载的 URL。
+  // 归档不可用时原样返回，行为与上游一致。
+  let resolvedSrc = src;
+  try {
+    resolvedSrc = await resolveAssetUrl(src);
+  } catch {
+    resolvedSrc = src;
+  }
+  const usesArchive = resolvedSrc !== src;
+
   const img = new Image();
   img.onload = () => {
     loadedImages[src] = img;
     inFlight.delete(src);
+    if (usesArchive) releaseAssetUrl(src);
 
     if (profiler) {
       profiler.mark(`image-load:${src}:end`);
@@ -101,10 +113,11 @@ export function loadImage(src: string): Promise<HTMLImageElement> {
   };
   img.onerror = () => {
     inFlight.delete(src);
+    if (usesArchive) releaseAssetUrl(src);
     console.error(`Failed to load image: ${src}`);
     reject(new Error(`Failed to load ${src}`));
   };
-  img.src = src;
+  img.src = resolvedSrc;
 
   return p;
 }

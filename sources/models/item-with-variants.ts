@@ -2,6 +2,7 @@ import type { CatalogReader, ItemMerged } from "../state/catalog.ts";
 import { COMPACT_FRAME_SIZE, FRAME_SIZE } from "../state/constants.ts";
 import { getLayersToLoad, type LayerToLoad } from "../state/meta.ts";
 import { getSelectionGroup, selectItem, type State } from "../state/state.ts";
+import { releaseAssetUrl, resolveAssetUrl } from "../utils/asset-vfs.ts";
 import { capitalize } from "../utils/helpers.ts";
 
 export type VariantItemModel = {
@@ -28,13 +29,24 @@ export type ItemWithVariantsModel = {
   toggle(): number;
 };
 
-function loadLayer(layer: LayerToLoad) {
+async function loadLayer(layer: LayerToLoad) {
+  // 资源可能被打包进单个归档（APK 的 zip 条目上限约束）→ 先解析为可加载的 URL
+  const resolvedSrc = await resolveAssetUrl(layer.path);
   return new Promise<{ img: HTMLImageElement | null; layer: LayerToLoad }>(
     (resolve) => {
       const img = new Image();
-      img.onload = () => resolve({ img, layer });
-      img.onerror = () => resolve({ img: null, layer });
-      img.src = layer.path;
+      const release = () => {
+        if (resolvedSrc !== layer.path) releaseAssetUrl(layer.path);
+      };
+      img.onload = () => {
+        release();
+        resolve({ img, layer });
+      };
+      img.onerror = () => {
+        release();
+        resolve({ img: null, layer });
+      };
+      img.src = resolvedSrc;
     },
   );
 }

@@ -2,6 +2,7 @@
 // Recolors body sprites on-demand without caching
 
 import { ok, err, type Result } from "neverthrow";
+import { releaseAssetUrl, resolveAssetUrl } from "../utils/asset-vfs.ts";
 import {
   recolorImageWebGL,
   recolorImageWebGLNow,
@@ -731,18 +732,27 @@ export async function drawRecolorPreview(
 
   // Load and draw all layers
   const loadedLayers = await Promise.all(
-    layersToLoad.map((layer) => {
+    layersToLoad.map(async (layer) => {
+      // 资源可能被打包进单个归档（APK 的 zip 条目上限约束）→ 先解析为可加载的 URL
+      const resolvedSrc = await resolveAssetUrl(layer.path);
       return new Promise<{
         img: HTMLImageElement | null;
         layer: { path: string };
       }>((resolve) => {
+        const release = () => {
+          if (resolvedSrc !== layer.path) releaseAssetUrl(layer.path);
+        };
         const img = new Image();
-        img.onload = () => resolve({ img, layer });
+        img.onload = () => {
+          release();
+          resolve({ img, layer });
+        };
         img.onerror = () => {
+          release();
           debugWarn(`Failed to load image for layer ${layer.path}`);
           resolve({ img: null, layer });
         };
-        img.src = layer.path;
+        img.src = resolvedSrc;
       });
     }),
   );
