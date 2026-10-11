@@ -19,6 +19,8 @@ type FiltersPanelAttrs = {
   createAnimationFiltersModel: () => AnimationFiltersModel;
   createCurrentSelectionsModel: () => CurrentSelectionsModel;
   createCategoryTreeModel: () => CategoryTreeModel;
+  /** 移动端标签切片归属（空格分隔，见 CollapsibleSection.slice）。 */
+  slice?: string;
 };
 
 export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
@@ -35,14 +37,16 @@ export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
       {
         title: t("panel.filters"),
         defaultOpen: true,
+        slice: vnode.attrs.slice,
       },
       [
         m(
           "div.mb-4",
+          { "data-slice": "parts" },
           m(SearchControl, { createModel: createSearchControlModel }),
         ),
         // Responsive wrapper for License and Animation filters
-        m("div.columns.is-multiline.m-0", [
+        m("div.columns.is-multiline.m-0", { "data-slice": "parts" }, [
           m(
             "div.column.is-half-desktop.is-12-mobile",
             {
@@ -60,6 +64,7 @@ export const FiltersPanel: m.Component<FiltersPanelAttrs> = {
         ]),
         m(
           "div.mb-4",
+          { "data-slice": "selected" },
           m(CurrentSelections, {
             createModel: createCurrentSelectionsModel,
           }),

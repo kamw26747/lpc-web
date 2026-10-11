@@ -30,6 +30,9 @@ type MetadataView = Partial<ItemMerged>;
 
 type ZipMode = { isRunning: boolean };
 
+/** 移动端底部标签（仅 <1024px 生效；桌面端不被使用）。 */
+export type MobileTab = "preview" | "parts" | "selected" | "export";
+
 /** Global application state. Mutated in place; Mithril views observe via redraw. */
 export type State = {
   // saved in URL hash
@@ -56,6 +59,7 @@ export type State = {
   enabledAnimations: Record<string, boolean>;
 
   // transient (never saved)
+  mobileTab: MobileTab;
   zipByAnimation: ZipMode;
   zipByItem: ZipMode;
   zipByAnimationAndItem: ZipMode;
@@ -154,6 +158,7 @@ export function createState(): State {
     ),
 
     // Following transient state should never be saved
+    mobileTab: "preview",
     zipByAnimation: { isRunning: false },
     zipByItem: { isRunning: false },
     zipByAnimationAndItem: { isRunning: false },

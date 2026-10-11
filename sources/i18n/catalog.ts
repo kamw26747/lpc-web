@@ -46,6 +46,13 @@ export const en: Record<string, string> = {
   "common.notFound": "Not found: {id}",
   "common.rendering": "Rendering character",
 
+  "mobile.tab.preview": "Character",
+  "mobile.tab.parts": "Items",
+  "mobile.tab.selected": "Chosen",
+  "mobile.tab.export": "Export",
+  "mobile.theme.switch": "Switch theme",
+  "mobile.dock.expand": "Open character preview",
+
   "body.male": "Male",
   "body.female": "Female",
   "body.teen": "Teen",
@@ -111,6 +118,13 @@ export const zhCN: Record<string, string> = {
   "common.unknownError": "未知错误",
   "common.notFound": "未找到：{id}",
   "common.rendering": "正在渲染角色",
+
+  "mobile.tab.preview": "角色",
+  "mobile.tab.parts": "部位",
+  "mobile.tab.selected": "已选",
+  "mobile.tab.export": "导出",
+  "mobile.theme.switch": "切换主题",
+  "mobile.dock.expand": "展开角色预览",
 
   "body.male": "男性",
   "body.female": "女性",

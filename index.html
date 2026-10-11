@@ -3,10 +3,28 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 	<title>Universal LPC Sprite Sheet Character Generator</title>
+	<script>
+		// 移动端主题：在首次绘制前应用，避免闪白。
+		// 优先读记忆；无记忆时跟随系统。桌面端通过媒体查询忽略该属性，恒为原有亮色。
+		(function () {
+			try {
+				var theme = localStorage.getItem("lpc.mobileTheme");
+				if (theme !== "light" && theme !== "dark") {
+					theme = window.matchMedia &&
+						window.matchMedia("(prefers-color-scheme: dark)").matches
+						? "dark"
+						: "light";
+				}
+				document.documentElement.setAttribute("data-theme", theme);
+			} catch (e) {
+				/* 隐私模式等场景忽略 */
+			}
+		})();
+	</script>
 </head>
-<body>
+<body data-mobile-tab="preview">
 	<section id="header-left" class="sticky">
 		<div class="is-flex is-align-items-center is-flex-wrap-wrap" style="gap: 1rem;">
 			<h1 class="title is-4 mb-0">
@@ -52,6 +70,11 @@
 			</div>
 		</div>
 	</div>
+
+	<!-- 移动端外壳（底部标签栏 / 主题切换 / 停靠条按钮）。
+	     仅 <1024px 可见；由 sources/components/mobile/MobileShell.ts 渲染。 -->
+	<div id="mobile-shell"></div>
+
 	<script type="module" src="sources/main.ts"></script>
 </body>
 </html>

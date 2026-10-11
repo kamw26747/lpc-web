@@ -117,11 +117,17 @@ const DownloadContent: m.Component<{
 
 export const Download: m.Component<{
   createModel: () => DownloadModel;
+  /** 移动端标签切片归属（见 CollapsibleSection.slice）。 */
+  slice?: string;
 }> = {
   view(vnode) {
     return m(
       CollapsibleSection,
-      { title: t("download.title"), defaultOpen: true },
+      {
+        title: t("download.title"),
+        defaultOpen: true,
+        slice: vnode.attrs.slice,
+      },
       m(DownloadContent, { createModel: vnode.attrs.createModel }),
     );
   },

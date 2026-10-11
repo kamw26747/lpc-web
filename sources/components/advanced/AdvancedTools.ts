@@ -4,7 +4,7 @@ import { t } from "../../utils/i18n.ts";
 import type { State } from "../../state/state.ts";
 import { CollapsibleSection } from "../CollapsibleSection.ts";
 
-export const AdvancedTools: m.Component<{ state: State }> = {
+export const AdvancedTools: m.Component<{ state: State; slice?: string }> = {
   view(vnode) {
     const { state } = vnode.attrs;
     const handleFileUpload = (e: Event) => {
@@ -42,6 +42,7 @@ export const AdvancedTools: m.Component<{ state: State }> = {
       {
         title: t("advanced.title"),
         defaultOpen: false,
+        slice: vnode.attrs.slice,
       },
       [
         m("div.field", [

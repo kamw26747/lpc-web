@@ -78,6 +78,7 @@ import { initHashChangeListener } from "./state/hash.ts";
 import { App } from "./components/App.ts";
 import { AnimationPreview } from "./components/preview/AnimationPreview.ts";
 import { FullSpritesheetPreview } from "./components/preview/FullSpritesheetPreview.ts";
+import { MobileShell } from "./components/mobile/MobileShell.ts";
 
 // Import UI i18n（上游无 i18n 框架，由本项目引入）
 import { initI18n } from "./utils/i18n.ts";
@@ -168,6 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
         catalog: applicationCatalog,
         state: applicationState,
       }),
+  });
+
+  // 移动端外壳（底部标签栏 / 主题切换）。桌面端由 CSS 整体隐藏。
+  m.mount(document.getElementById("mobile-shell")!, {
+    view: () => m(MobileShell, { state: applicationState }),
   });
 
   clearShellLoadingClass();

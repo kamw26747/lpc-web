@@ -67,8 +67,13 @@ export const App: m.Component<AppAttrs, AppState> = {
   },
   view(vnode) {
     const { state, models } = vnode.attrs;
+    // 注意：子组件的顺序与嵌套**不可随意改动** —— 桌面端 CSS 依赖
+    // `#mithril-filters > div > .box:nth-child(N)`。移动端标签切换走 `slice` 属性。
     return m("div", [
-      m(Download, { createModel: models.createDownloadModel }),
+      m(Download, {
+        createModel: models.createDownloadModel,
+        slice: "export",
+      }),
       m(FiltersPanel, {
         // Models are meant to be created lazily when the leaf components need it
         createSearchControlModel: models.createSearchControlModel,
@@ -76,9 +81,10 @@ export const App: m.Component<AppAttrs, AppState> = {
         createAnimationFiltersModel: models.createAnimationFiltersModel,
         createCurrentSelectionsModel: models.createCurrentSelectionsModel,
         createCategoryTreeModel: models.createCategoryTreeModel,
+        slice: "parts selected",
       }),
-      m(Credits, { createModel: models.createCreditsModel }),
-      m(AdvancedTools, { state }),
+      m(Credits, { createModel: models.createCreditsModel, slice: "export" }),
+      m(AdvancedTools, { state, slice: "export" }),
     ]);
   },
 };

@@ -85,7 +85,7 @@ p {
   overflow-y: auto;
 }
 
-#animations-preview,
+#previewAnimations,
 #spritesheet-preview {
   touch-action: pan-x pan-y;
 }

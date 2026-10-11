@@ -1,0 +1,109 @@
+/* 移动端主题变量（仅 <1024px 生效）
+ *
+ * 桌面端不受影响：所有规则都包在移动端媒体查询内，
+ * 因此即使 <html data-theme="dark">，桌面仍走 Bulma 原有亮色。
+ *
+ * 必须在 critical 链里加载（sources/styles/critical-entry.scss）：
+ * 上游的 deferred CSS 在生产构建中不会被加载。
+ */
+
+@media (max-width: 1023px) {
+  :root {
+    --m-tabbar-h: 56px;
+    --m-dock-h: 76px;
+    --m-safe-bottom: env(safe-area-inset-bottom, 0px);
+    --m-z-tabbar: 300;
+    --m-z-theme: 260;
+    --m-z-dock: 250;
+  }
+
+  [data-theme="light"] {
+    --m-bg: #f2f3f5;
+    --m-surface: #ffffff;
+    --m-surface-2: #f6f7f9;
+    --m-border: #e2e4e8;
+    --m-text: #14151a;
+    --m-text-dim: #6b6f7a;
+    --m-accent: #0a8f7d;
+  }
+
+  [data-theme="dark"] {
+    color-scheme: dark;
+    --m-bg: #0f1115;
+    --m-surface: #191c22;
+    --m-surface-2: #20242b;
+    --m-border: #2b2f38;
+    --m-text: #e9eaee;
+    --m-text-dim: #9aa0ad;
+    --m-accent: #2ee6c6;
+
+    /* 让既有 Bulma 组件跟随暗色：覆盖 Bulma 实际读取的变量子集 */
+    --bulma-body-background-color: #0f1115;
+    --bulma-body-color: #e9eaee;
+    --bulma-text: #e9eaee;
+    --bulma-text-strong: #ffffff;
+    --bulma-title-color: #e9eaee;
+    --bulma-subtitle-color: #9aa0ad;
+    --bulma-label-color: #d7dae0;
+    --bulma-border: #2b2f38;
+    --bulma-border-weak: #23262d;
+    --bulma-box-background-color: #191c22;
+    --bulma-box-color: #e9eaee;
+    --bulma-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --bulma-background: #20242b;
+    --bulma-input-background-color: #20242b;
+    --bulma-input-color: #e9eaee;
+    --bulma-input-border-color: #2b2f38;
+    --bulma-input-placeholder-color: #7c8290;
+    --bulma-scheme-main: #191c22;
+    --bulma-scheme-main-bis: #20242b;
+    --bulma-scheme-main-ter: #20242b;
+    --bulma-scheme-main-l: 12%;
+    --bulma-scheme-main-bis-l: 16%;
+    --bulma-scheme-main-ter-l: 20%;
+    --bulma-text-l: 92%;
+    --bulma-text-weak: #9aa0ad;
+  }
+
+  /* 上游在 bulma-overrides-paint.css 里用 !important 钉死了若干浅色，
+     暗色下必须用同等特异性 + !important 覆盖（且仅存在于移动端媒体查询内）。 */
+  [data-theme="dark"] body {
+    background-color: var(--m-bg) !important;
+    color: var(--m-text) !important;
+  }
+  [data-theme="dark"] .box {
+    background-color: var(--m-surface) !important;
+    color: var(--m-text) !important;
+  }
+  [data-theme="dark"] .has-background-light,
+  [data-theme="dark"] .has-background-white-ter {
+    background-color: var(--m-surface-2) !important;
+  }
+  [data-theme="dark"] .has-background-link-light {
+    background-color: #16323d !important;
+  }
+  [data-theme="dark"] .has-text-grey {
+    color: var(--m-text-dim) !important;
+  }
+  [data-theme="dark"] .title,
+  [data-theme="dark"] .subtitle,
+  [data-theme="dark"] .label,
+  [data-theme="dark"] .content,
+  [data-theme="dark"] strong {
+    color: var(--m-text) !important;
+  }
+  [data-theme="dark"] #header-left {
+    background: var(--m-surface) !important;
+  }
+  [data-theme="dark"] a {
+    color: var(--m-accent);
+  }
+  [data-theme="dark"] .notification.is-warning.is-light {
+    background-color: #3a2f14 !important;
+    color: #f2d99a !important;
+  }
+  [data-theme="dark"] .button.is-static.is-light {
+    background-color: var(--m-surface-2) !important;
+    color: var(--m-text-dim) !important;
+  }
+}

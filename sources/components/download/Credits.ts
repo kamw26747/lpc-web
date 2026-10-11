@@ -54,6 +54,8 @@ const CreditsContent: m.Component<{
 
 export const Credits: m.Component<{
   createModel: () => CreditsModel;
+  /** 移动端标签切片归属（见 CollapsibleSection.slice）。 */
+  slice?: string;
 }> = {
   view(vnode) {
     return m(
@@ -63,6 +65,7 @@ export const Credits: m.Component<{
         defaultOpen: true,
         boxClass: "box",
         id: "credits-section",
+        slice: vnode.attrs.slice,
       },
       [
         m("p.is-size-7.mb-2", [

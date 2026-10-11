@@ -7,6 +7,12 @@ export type CollapsibleSectionAttrs = {
   boxClass?: string;
   onToggle?: (isCollapsed: boolean) => void;
   id?: string;
+  /**
+   * 移动端「标签切片」归属：空格分隔的标识（如 `"parts selected"`）。
+   * 渲染为根元素上的 `data-slice`，由移动端 CSS 按当前标签显隐。
+   * 用**属性**而非包裹元素，避免破坏桌面端依赖 nth-child 的选择器。
+   */
+  slice?: string;
 };
 
 type CollapsibleSectionState = { isCollapsed: boolean };
@@ -20,7 +26,7 @@ export const CollapsibleSection: m.Component<
     vnode.state.isCollapsed = !defaultOpen;
   },
   view(vnode) {
-    const { title, boxClass = "box", onToggle, id } = vnode.attrs;
+    const { title, boxClass = "box", onToggle, id, slice } = vnode.attrs;
     const { isCollapsed } = vnode.state;
 
     const toggleCollapse = () => {
@@ -33,7 +39,7 @@ export const CollapsibleSection: m.Component<
       }
     };
 
-    return m(`div.${boxClass}`, { id }, [
+    return m(`div.${boxClass}`, { id, "data-slice": slice }, [
       // Collapsible header
       m(
         "div",

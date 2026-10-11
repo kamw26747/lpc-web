@@ -1,0 +1,229 @@
+/* 移动端外壳布局（仅 <1024px 生效）
+ *
+ * 桌面端（>=1024px）完全不受影响：#mobile-shell 整体隐藏，
+ * 且所有其它规则都在 max-width:1023px 内 —— 与 Bulma 的 is-desktop
+ * （min-width:1024px）严格互补。
+ *
+ * 结构约定（改动前务必读 sources/components/mobile/MobileShell.ts 的注释）：
+ *   · 标签切换靠 <body data-mobile-tab> + data-slice 可见性，不新增 DOM 包裹层
+ *   · 预览"常驻"是同一个 #preview-column 的 CSS 换位（离屏画布是单例，不能复制组件）
+ */
+
+@media (min-width: 1024px) {
+  #mobile-shell {
+    display: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* ══════════ 视口与滚动 ══════════ */
+  body {
+    background: var(--m-bg);
+  }
+
+  #columns-container {
+    overflow-y: auto;
+    overscroll-behavior-y: contain; /* 防误触下拉刷新 */
+    padding-bottom: calc(
+      var(--m-tabbar-h) + var(--m-safe-bottom) + var(--m-dock-h) + 8px
+    );
+  }
+  #chooser-column,
+  #preview-column {
+    overflow: visible;
+  }
+
+  /* 顶栏压缩：移动端不需要赞助商链接 */
+  #header-left {
+    min-height: 0;
+    width: 100%;
+    padding: 8px 56px 8px 12px; /* 右侧留出主题按钮 */
+    background: var(--m-surface);
+    border-bottom: 1px solid var(--m-border);
+  }
+  #header-left h1.title {
+    font-size: 1rem;
+  }
+  #header-left .subtitle {
+    font-size: 0.75rem;
+  }
+  #sponsors-links {
+    display: none;
+  }
+
+  /* ══════════ 底部标签栏 ══════════ */
+  .m-tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--m-z-tabbar);
+    display: flex;
+    height: calc(var(--m-tabbar-h) + var(--m-safe-bottom));
+    padding-bottom: var(--m-safe-bottom);
+    background: var(--m-surface);
+    border-top: 1px solid var(--m-border);
+  }
+  .m-tab {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 44px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border: 0;
+    background: transparent;
+    color: var(--m-text-dim);
+    font-size: 11px;
+    line-height: 1;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .m-tab__icon {
+    font-size: 18px;
+  }
+  .m-tab.is-active {
+    color: var(--m-accent);
+    font-weight: 600;
+  }
+
+  /* ══════════ 主题切换 ══════════ */
+  .m-theme-toggle {
+    position: fixed;
+    z-index: var(--m-z-theme);
+    top: 10px;
+    right: 10px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--m-border);
+    background: var(--m-surface);
+    color: var(--m-text);
+    font-size: 18px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* ══════════ 预览常驻：全屏 ↔ 停靠条 ══════════ */
+  #preview-column {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--m-tabbar-h) + var(--m-safe-bottom));
+    height: var(--m-dock-h);
+    z-index: var(--m-z-dock);
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--m-surface);
+    border-top: 1px solid var(--m-border);
+  }
+  body[data-mobile-tab="preview"] #preview-column {
+    position: static;
+    height: auto;
+    padding: 1rem;
+    display: block;
+    overflow: visible;
+    border-top: 0;
+  }
+
+  /* 停靠条上方的"点开预览"按钮 */
+  .m-dock-tap {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--m-tabbar-h) + var(--m-safe-bottom));
+    height: var(--m-dock-h);
+    z-index: calc(var(--m-z-dock) + 1);
+    border: 0;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 停靠态：只露出动画画布（折叠头 + 控件 + 整表预览都收起） */
+  #mithril-preview .collapsible-header,
+  #mithril-preview .collapsible-content > .columns,
+  #mithril-preview .collapsible-content > .mt-3 > .preview-canvas-area > .preview-canvas-busy,
+  #mithril-spritesheet-preview {
+    display: none;
+  }
+  body[data-mobile-tab="preview"] #mithril-preview .collapsible-header,
+  body[data-mobile-tab="preview"] #mithril-preview .collapsible-content > .columns,
+  body[data-mobile-tab="preview"] #mithril-spritesheet-preview {
+    display: block;
+  }
+
+  #preview-column .box {
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+  }
+  #preview-column .scrollable-container {
+    max-height: none;
+    overflow: hidden;
+    cursor: default;
+  }
+  body:not([data-mobile-tab="preview"]) #preview-column .preview-canvas-area {
+    max-height: var(--m-dock-h);
+    overflow: hidden;
+  }
+
+  /* ══════════ 标签切片可见性 ══════════ */
+  /* 只"隐藏不匹配的"，不强制 display —— 避免破坏 .columns(flex) 等原有布局 */
+  body[data-mobile-tab="parts"] [data-slice]:not([data-slice~="parts"]),
+  body[data-mobile-tab="selected"] [data-slice]:not([data-slice~="selected"]),
+  body[data-mobile-tab="export"] [data-slice]:not([data-slice~="export"]) {
+    display: none;
+  }
+  /* 「角色」标签下隐藏整个筛选/导出列（此时预览独占全屏）。
+     注意：「导出」标签**不能**隐藏 #mithril-filters —— Download/Credits/AdvancedTools
+     都渲染在这个挂载点内，隐藏它会连同导出按钮一起藏掉。 */
+  body[data-mobile-tab="preview"] #mithril-filters {
+    display: none;
+  }
+
+  /* 「已选」标签：隐藏筛选盒子的折叠头与分类树，避免出现空盒子 */
+  body[data-mobile-tab="selected"] #mithril-filters .collapsible-header,
+  body[data-mobile-tab="selected"] #mithril-filters .category-tree-panel {
+    display: none;
+  }
+
+  /* ══════════ 触摸目标放大 ══════════ */
+  .tree-label,
+  .tree-node {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  label.checkbox {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+  }
+  .variant-item {
+    min-width: 72px;
+  }
+  .button.is-small {
+    min-height: 36px;
+    padding: 6px 14px;
+  }
+
+  /* ══════════ 首屏 loading 壳高度下调，匹配新布局 ══════════ */
+  .loading-shell-filters {
+    min-height: 40vh;
+  }
+  .loading-shell-animation,
+  .loading-shell-spritesheet {
+    min-height: 30vh;
+  }
+}
